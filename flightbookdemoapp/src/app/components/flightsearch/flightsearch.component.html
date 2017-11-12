@@ -1,0 +1,114 @@
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Flight Search Demo App</a>
+</nav>
+<div class="container">
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div class="card box">
+            <div class="card-header">
+                <h3>
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                  Search Flight
+                </h3>
+              </div>
+          <div class="card-body">
+              <div class="btn-group form-row" role="group" aria-label="Basic example">
+                  <button type="button" (click)="isReturn=true" class="btn btn-outline-primary">Return</button>
+                  <button type="button" (click)="isReturn=false" class="btn btn-outline-primary">One Way</button>
+                  <button type="button" class="btn btn-outline-primary">Multi-City</button>
+                </div>
+              <form class="form" (ngSubmit)="f.form.valid && search()" #f="ngForm" novalidate>
+                  <div class="form-row">
+                      <div class="form-group col-md-6">
+                          <label for="FlyingFrom">Flying From</label>
+                          <input type="text" class="form-control"
+                                 id="formGroupExampleInput" placeholder="Flying From"
+                                 name="flyingfrom" [(ngModel)]="model.flyingfrom" #flyingfrom="ngModel" required>
+                          <div *ngIf="f.submitted && !flyingfrom.valid" class="alert alert-danger">Flying from is required</div>
+                        </div>
+                      <div class="form-group col-md-6">
+                          <label for="FlyingTo">Flying To</label>
+                          <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Flying To"
+                             name="flyingto" [(ngModel)]="model.flyingto" #flyingto="ngModel" required>
+                          <div *ngIf="f.submitted && !flyingto.valid" class="alert alert-danger">Flying to is required</div>
+                      </div>
+                  </div>
+                  <div class="form-row">
+                          <div class="form-group col-md-3">
+                              <label for="Departing">Departing</label>
+                              <div class="input-group ">
+                                  <input class="form-control" placeholder="Depart Date"
+                                         name="dp" [(ngModel)]="model.departuredate" ngbDatepicker #d="ngbDatepicker"
+                                         #depdate="ngModel" required>
+                                  <button class="input-group-addon" (click)="d.toggle()" type="button">
+                                      <i class="fa fa-calendar" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                <div *ngIf="f.submitted && !depdate.valid" class="alert alert-danger">Departing date is required</div>
+                          </div>
+                          <div class="form-group col-md-3" *ngIf="isReturn">
+                              <label for="Returning">Returning</label>
+                            <div class="input-group " >
+                                <input class="form-control" placeholder="Return Date"
+                                       name="returndate" [(ngModel)]="model.returndate" ngbDatepicker #d1="ngbDatepicker"
+                                       #returndate="ngModel" required>
+                                <button class="input-group-addon" (click)="d1.toggle()" type="button">
+                                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                                  </button>
+                              </div>
+                              <div *ngIf="f.submitted && !returndate.valid" class="alert alert-danger">Return date is required</div>
+                              
+                              
+                            </div>
+                      </div>
+            
+                      <button type="submit" class="btn btn-primary">Search</button>
+                  
+                  </form>
+          
+          </div>
+           
+         
+        
+              
+      </div>
+    </div>
+    </div>
+    <div class="col-md-1"></div>
+    
+    
+
+    <div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div class="container flightdetails-panel">
+            <div class="row flightdetail" *ngFor="let flightdetail of flights">
+              <div class="col-md-1">
+                 <i class="fa fa-plane fa-4x" aria-hidden="true"></i>
+              </div>
+              <div class="col-md-3">
+                   {{flightdetail.departTime}} - {{flightdetail.arrivalTime}}<br>{{flightdetail.brand}}
+               </div>
+               <div class="col-md-3">
+                   {{flightdetail.duration}}<br> {{flightdetail.departAirportCD}}-{{flightdetail.destAirportCD}}
+               </div>
+               <div class="col-md-2">
+                 <h4><span class="badge badge-primary">
+                     Direct
+                   </span>
+                 </h4>
+                   
+               </div>
+               <div class="col-md-3 price">
+                   <h3><i class="fa fa-inr" aria-hidden="true"></i>{{flightdetail.price}}</h3>
+                   <button type="button" class="btn btn-primary btn-sm">Select</button>
+               </div>
+             </div>
+         </div>
+    </div>
+    <div class="col-md-1"></div>
+    
+
+</div>
+</div>
