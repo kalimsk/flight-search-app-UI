@@ -8,8 +8,7 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { FlightsearchComponent } from './components/flightsearch/flightsearch.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import { AuthServiceConfig, FacebookLoginProvider } from 'angular4-social-login';
-import { SocialLoginModule } from "angular4-social-login";
+import { FacebookModule } from 'ngx-facebook';
 
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -26,16 +25,6 @@ import { AuthenticationService } from './services/authentication.service';
 
 import { UserService } from './services/user.service';
 
-let config = new AuthServiceConfig([
-  {
-    id: FacebookLoginProvider.PROVIDER_ID,
-    provider: new FacebookLoginProvider("128500911172566")
-  }
-]);
-
-export function provideConfig() {
-  return config;
-}
 
 @NgModule({
   declarations: [
@@ -51,15 +40,11 @@ export function provideConfig() {
     HttpModule,
     routing,
     NgbModule.forRoot(),
-    SocialLoginModule,
+    FacebookModule.forRoot(),
     BrowserAnimationsModule
     
   ],
   providers: [
-    {
-      provide: AuthServiceConfig,
-      useFactory: provideConfig
-    },
     AuthGuard,
     AlertService,
     AuthenticationService,
