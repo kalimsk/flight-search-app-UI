@@ -9,6 +9,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { FlightsearchComponent } from './components/flightsearch/flightsearch.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { FacebookModule } from 'ngx-facebook';
+import {BsDatepickerModule} from 'ngx-bootstrap'; 
 
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -24,6 +25,11 @@ import { AlertService} from './services/alert.service';
 import { AuthenticationService } from './services/authentication.service';
 
 import { UserService } from './services/user.service';
+import {FlightSearchService} from './services/flight-search.service';
+import {FeatureService} from './services/feature.service';
+// noinspection TypeScriptCheckImport
+import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
+
 
 
 @NgModule({
@@ -32,7 +38,7 @@ import { UserService } from './services/user.service';
     LoginComponent,
     RegisterComponent,
     FlightsearchComponent,
-    AlertComponent
+    AlertComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,6 +46,8 @@ import { UserService } from './services/user.service';
     HttpModule,
     routing,
     NgbModule.forRoot(),
+    BsDatepickerModule.forRoot(),
+    Ng2AutoCompleteModule,
     FacebookModule.forRoot(),
     BrowserAnimationsModule
     
@@ -48,7 +56,9 @@ import { UserService } from './services/user.service';
     AuthGuard,
     AlertService,
     AuthenticationService,
-    UserService
+    UserService,
+    FlightSearchService,
+    FeatureService
   ],
   bootstrap: [AppComponent]
 })

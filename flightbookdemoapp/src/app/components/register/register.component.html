@@ -11,6 +11,7 @@
                     
             </div>
             <div class="card-body">
+                    <app-alert></app-alert>
                     <form name="form" (ngSubmit)="f.form.valid && register()" #f="ngForm" novalidate>
                             <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !username.valid }">
                                 <label for="firstName">First Name</label>
@@ -31,6 +32,44 @@
                                 <label for="password">Password</label>
                                 <input type="password" class="form-control" name="password" [(ngModel)]="model.password" #password="ngModel" required />
                                 <div *ngIf="f.submitted && !password.valid" class="help-block">Password is required</div>
+                            </div>
+                            <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !email.valid }">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" name="email" [(ngModel)]="model.email" #email="ngModel" required />
+                                <div *ngIf="f.submitted && !email.valid" class="help-block">Email is required</div>
+                            </div>
+                            <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !contactno.valid }">
+                                <label for="contactno">Contact No</label>
+                                <input type="text" class="form-control" name="contactno" [(ngModel)]="model.contactno" #contactno="ngModel" required />
+                                <div *ngIf="f.submitted && !contactno.valid" class="help-block">Contactno is required</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="dest">What is your favourite destination?</label>
+                                <div class="form-control ">
+                                    <div class="form-check form-check-inline" *ngFor="let dest of destinations">
+                                    <label class="checkfield">
+                                        <input type="checkbox"
+                                            name="dest"
+                                            value="dest.value"
+                                            [(ngModel)]="dest.checked"/>
+                                        {{dest.name}}
+                                    </label>
+                                    </div>
+                                </div>                                
+                            </div>
+                            <div class="form-group">
+                                <label for="dest">What do you like most?</label>
+                                <div class="form-control checkfield" >
+                                    <div class="form-check form-check-inline" *ngFor="let event of events">
+                                    <label class="checkfield">
+                                        <input type="checkbox"
+                                            name="event"
+                                            value="event.value"
+                                            [(ngModel)]="event.checked"/>
+                                        {{event.name}}
+                                    </label>
+                                    </div>
+                                </div>                                
                             </div>
                             <div class="form-group">
                                 <button [disabled]="loading" class="btn btn-primary">Register</button>

@@ -1,10 +1,45 @@
 <nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand" href="#">Flight Search Demo App</a>
+    <span class="userSpan"><i class="fa fa-user" aria-hidden="true"></i> {{username}} <button class="btn btn-info btn-sm" (click)="logout()" data-toggle="tooltip" data-placement="top" title="Logout"><i  class="fa fa-sign-out" aria-hidden="true"></i></button></span>
+    
 </nav>
-<div class="container">
+<div class="container-fluid">
 <div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-10">
+    <div class="col-md-3">
+        <div class="card box" *ngIf='showDestinations'>
+             <div class="card-header">
+                <h4>
+                  Popular Destinations   
+                </h4>
+                <small>Click on each destination to book</small>
+              </div>
+              <form>
+                        <label class="radio-inline">
+                        <input type="radio" name="optradio" value='Beach' (click)='loadDestination($event)'>Beach
+                        </label>
+                        <label class="radio-inline">
+                        <input type="radio" name="optradio" value='Mountains' (click)='loadDestination($event)' >Mountains
+                        </label>
+                        <label class="radio-inline">
+                        <input type="radio" name="optradio" value='Romantic' (click)='loadDestination($event)' >Romantic
+                        </label>
+                </form>
+              <div class="box" *ngFor='let dest of destinations; let i of index'>
+                
+                <div class="alert alert-success"  (click)="hideAndShowDest(dest)">
+                                        {{dest.destinationHead}}
+                </div>
+                <div class="eventDetail" *ngIf="dest.show">
+                        <div >
+                            {{dest.destinationDetail}}
+                            <button type="button" class="btn btn-primary btn-sm">Book</button>
+                        </div>
+                </div>
+              </div>
+              
+           </div>
+    </div>
+    <div class="col-md-6">
         <div class="card box">
             <div class="card-header">
                 <h3>
@@ -18,46 +53,62 @@
                   <button type="button" (click)="isReturn=false" class="btn btn-outline-primary">One Way</button>
                   <button type="button" class="btn btn-outline-primary">Multi-City</button>
                 </div>
+                <div class="traffic">
+                    <button class='btn btn-info btn-sm' *ngIf='showTraffic' (click)="onNavigate()">Traffic in {{model.flyingto.city}}</button>
+                </div>
               <form class="form" (ngSubmit)="f.form.valid && search()" #f="ngForm" novalidate>
                   <div class="form-row">
-                      <div class="form-group col-md-6">
-                          <label for="FlyingFrom">Flying From</label>
-                          <input type="text" class="form-control"
-                                 id="formGroupExampleInput" placeholder="Flying From"
-                                 name="flyingfrom" [(ngModel)]="model.flyingfrom" #flyingfrom="ngModel" required>
-                          <div *ngIf="f.submitted && !flyingfrom.valid" class="alert alert-danger">Flying from is required</div>
+                      
+                        <div class="form-group col-md-6">
+                            <label for="FlyingFrom">Flying From</label>
+                            <input type="text" class="form-control"
+                                    ng2-auto-complete
+                                    [source]="airports"
+                                    [list-formatter]="autocompleListFormatter"
+                                    value-property-name="code"
+                                    display-property-name="code"
+                                    id="formGroupExampleInput" placeholder="Flying From"
+                                    name="flyingfrom" [(ngModel)]="model.flyingfrom" #flyingfrom="ngModel" required>
+                            <div *ngIf="f.submitted && !flyingfrom.valid" class="alert alert-danger">Flying from is required</div>
                         </div>
+                                                 
+                      
+                      
+                        
                       <div class="form-group col-md-6">
                           <label for="FlyingTo">Flying To</label>
                           <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Flying To"
+                             ng2-auto-complete
+                             [source]="airports"
+                             [list-formatter]="autocompleListFormatter"
+                             value-property-name="code"
+                             display-property-name="code"   
                              name="flyingto" [(ngModel)]="model.flyingto" #flyingto="ngModel" required>
                           <div *ngIf="f.submitted && !flyingto.valid" class="alert alert-danger">Flying to is required</div>
                       </div>
                   </div>
                   <div class="form-row">
-                          <div class="form-group col-md-3">
+                          <div class="form-group col-md-6">
                               <label for="Departing">Departing</label>
                               <div class="input-group ">
-                                  <input class="form-control" placeholder="Depart Date"
-                                         name="dp" [(ngModel)]="model.departuredate" ngbDatepicker #d="ngbDatepicker"
-                                         #depdate="ngModel" required>
-                                  <button class="input-group-addon" (click)="d.toggle()" type="button">
+                                  <input type="text" name="departDate" class="form-control" placeholder="Depart Date"  #departDate="bsDatepicker"
+                                        [bsConfig]="bsConfig" [minDate]="minDate" bsDatepicker [(ngModel)]="model.departuredate" #date1="ngModel" required>
+                                  <button class="input-group-addon" (click)="departDate.toggle()" type="button">
                                       <i class="fa fa-calendar" aria-hidden="true"></i>
                                     </button>
                                 </div>
-                                <div *ngIf="f.submitted && !depdate.valid" class="alert alert-danger">Departing date is required</div>
+                                <div *ngIf="f.submitted && !date1.valid" class="alert alert-danger">Departing date is required</div>
                           </div>
-                          <div class="form-group col-md-3" *ngIf="isReturn">
+                          <div class="form-group col-md-6" *ngIf="isReturn">
                               <label for="Returning">Returning</label>
                             <div class="input-group " >
-                                <input class="form-control" placeholder="Return Date"
-                                       name="returndate" [(ngModel)]="model.returndate" ngbDatepicker #d1="ngbDatepicker"
-                                       #returndate="ngModel" required>
-                                <button class="input-group-addon" (click)="d1.toggle()" type="button">
+                                <input type="text" name="returndate" class="form-control" placeholder="Return Date"  #returndate="bsDatepicker"
+                                    [bsConfig]="bsConfig" [minDate]="minDate" bsDatepicker [(ngModel)]="model.returndate" #date2="ngModel" required>
+                                <button class="input-group-addon" (click)="returndate.toggle()" type="button">
                                     <i class="fa fa-calendar" aria-hidden="true"></i>
                                   </button>
                               </div>
-                              <div *ngIf="f.submitted && !returndate.valid" class="alert alert-danger">Return date is required</div>
+                              <div *ngIf="f.submitted && !date2.valid" class="alert alert-danger">Return date is required</div>
                               
                               
                             </div>
@@ -73,42 +124,86 @@
         
               
       </div>
+      <div class="container flightdetails-panel">
+                <div class="row flightdetail" *ngFor="let flightdetail of flights">
+                <div class="col-md-1">
+                    <i class="fa fa-plane fa-4x" aria-hidden="true"></i>
+                </div>
+                <div class="col-md-3">
+                    {{flightdetail.departTime}} - {{flightdetail.arrivalTime}}<br>{{flightdetail.brand}}
+                </div>
+                <div class="col-md-2">
+                    {{flightdetail.duration}}<br> {{flightdetail.departAirportCD}}-{{flightdetail.destAirportCD}}
+                </div>
+                <div class="col-md-3">
+                    <h4><span class="badge badge-primary">
+                        {{flightdetail.type}}
+                    </span>
+                    </h4>
+                    
+                </div>
+                <div class="col-md-3 price">
+                    <h3><i class="fa fa-usd" aria-hidden="true"></i>{{flightdetail.price}}</h3>
+                    <button type="button" class="btn btn-primary btn-sm">Select</button>
+                </div>
+                </div>
+            </div>
     </div>
-    </div>
-    <div class="col-md-1"></div>
-    
-    
-
-    <div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-10">
-        <div class="container flightdetails-panel">
-            <div class="row flightdetail" *ngFor="let flightdetail of flights">
-              <div class="col-md-1">
-                 <i class="fa fa-plane fa-4x" aria-hidden="true"></i>
+    <div class="col-md-3">
+        <div class="card box" *ngIf='showEvents'>
+             <div class="card-header">
+                <h4>
+                  Events in {{eventsPlace}}
+                </h4>
+                <small>Click on each event to book</small>
               </div>
-              <div class="col-md-3">
-                   {{flightdetail.departTime}} - {{flightdetail.arrivalTime}}<br>{{flightdetail.brand}}
-               </div>
-               <div class="col-md-3">
-                   {{flightdetail.duration}}<br> {{flightdetail.departAirportCD}}-{{flightdetail.destAirportCD}}
-               </div>
-               <div class="col-md-2">
-                 <h4><span class="badge badge-primary">
-                     Direct
-                   </span>
-                 </h4>
-                   
-               </div>
-               <div class="col-md-3 price">
-                   <h3><i class="fa fa-inr" aria-hidden="true"></i>{{flightdetail.price}}</h3>
-                   <button type="button" class="btn btn-primary btn-sm">Select</button>
-               </div>
-             </div>
-         </div>
+              <div class="box" *ngFor='let event of events; let i of index'>
+                <div class="alert alert-success"  (click)="hideAndShow(event)">
+                                        {{event.eventHead}}
+                </div>
+                <div class='eventDetail' *ngIf="event.show">
+                        <div >
+                            {{event.eventDetail}}
+                            <button type="button" class="btn btn-primary btn-sm">Book</button>
+                        </div>
+                </div>
+              </div>
+              
+           </div>
     </div>
-    <div class="col-md-1"></div>
+</div>
     
 
-</div>
+    
+
+    <!--<div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div class="container flightdetails-panel">
+                <div class="row flightdetail" *ngFor="let flightdetail of flights">
+                <div class="col-md-1">
+                    <i class="fa fa-plane fa-4x" aria-hidden="true"></i>
+                </div>
+                <div class="col-md-3">
+                    {{flightdetail.departTime}} - {{flightdetail.arrivalTime}}<br>{{flightdetail.brand}}
+                </div>
+                <div class="col-md-3">
+                    {{flightdetail.duration}}<br> {{flightdetail.departAirportCD}}-{{flightdetail.destAirportCD}}
+                </div>
+                <div class="col-md-2">
+                    <h4><span class="badge badge-primary">
+                        Direct
+                    </span>
+                    </h4>
+                    
+                </div>
+                <div class="col-md-3 price">
+                    <h3><i class="fa fa-inr" aria-hidden="true"></i>{{flightdetail.price}}</h3>
+                    <button type="button" class="btn btn-primary btn-sm">Select</button>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+    </div>-->
 </div>

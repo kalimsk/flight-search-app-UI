@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertService} from '../../services/alert.service';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FacebookService, InitParams, LoginResponse} from 'ngx-facebook';
+import { FacebookService, InitParams, LoginResponse, LoginOptions } from 'ngx-facebook';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +14,6 @@ export class LoginComponent implements OnInit {
   model: any = {};
   loading = false;
   returnUrl: string;
-  authRes:AuthResponse;
   response: LoginResponse;
 
   constructor(
@@ -39,36 +38,51 @@ export class LoginComponent implements OnInit {
       // get return url from route parameters or default to '/'
       this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
-  
+
   loginWithFacebook(): void {
+
+const loginOptions:
+    LoginOptions  = {
+
+enable_profile_selector: 
+true,
+
+return_scopes: 
+true,
+
+scope: 'public_profile,user_friends,email,pages_show_list'
+
+};
+
     
-       this.fb.login()
-         .then((response: LoginResponse) => this.response=response)
+       this.fb.login(loginOptions)
+         .then((response: LoginResponse) =>{
+               this.model.username = response.authResponse.userID;
+               this.login(true,response.authResponse.accessToken);
+         } 
+                 )
          .catch((error: any) => this.alertService.error(error));
 
-      console.log(this.response);
+      
     
      }
 
-  
-  login() {
-      this.loading = true;
-      this.authenticationService.login(this.model.username, this.model.password,this.response.authResponse.accessToken)
+  loginWithUP(){
+    this.login(false,"");
+  }
+  login(facebooklogin:boolean,social_token:string) {
+      //this.loading = true;
+      //localStorage.setItem('currentUser', JSON.stringify({ username: this.model.username, token: "token" }));
+       //this.router.navigate([this.returnUrl]);
+      this.authenticationService.login(this.model.username, this.model.password,facebooklogin,social_token)
           .subscribe(
               data => {
                   this.router.navigate([this.returnUrl]);
               },
               error => {
-                  this.alertService.error(error);
+                  this.alertService.error("Error in login");
                   this.loading = false;
               });
   }
 
-}
-
-interface AuthResponse{
-    accessToken: string,
-    expiresIn:string,
-    signedRequest:string,
-    userID:string
 }

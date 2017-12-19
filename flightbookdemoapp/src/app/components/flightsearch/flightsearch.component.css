@@ -37,3 +37,41 @@ label{
     padding-bottom: 5px;
     border: 1px solid rgb(33, 250, 4);
 }
+
+.userSpan{
+    color:#fff !important;
+    font-size: 1.25rem;
+}
+
+.ng2-auto-complete {
+    position: absolute;
+    width: 97%;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 100 !important;
+    background-color: #F6F6F6;
+    font-family: sans-serif;
+    opacity: 0.98;
+}
+.form-group-with-autocomplete{
+    margin-bottom: 0rem;
+}
+
+.search-results {
+    padding: 10px;
+}
+
+.eventDetail{
+    color:lawngreen;
+}
+
+.footer{
+    
+    height: 5px;
+    padding: 50px;
+    color:lawngreen;
+}
+
+.traffic{
+    float:right;
+}
